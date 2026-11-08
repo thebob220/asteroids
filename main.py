@@ -2,6 +2,8 @@ import constants
 from logger import log_state
 import pygame
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
     # printing starting guff
@@ -15,13 +17,17 @@ def main():
     clock = pygame.time.Clock()
     dt = 0.0
 
-    # group up objects
+    # groups for game objects
+    asteroids = pygame.sprite.Group()
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     Player.containers = (updatable, drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
 
     # create game objects
     p = Player(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2)
+    af = AsteroidField()
 
     # game loop
     while True:
