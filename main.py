@@ -1,7 +1,7 @@
 import constants
 from logger import log_state
 import pygame
-import player
+from player import Player
 
 def main():
     # printing starting guff
@@ -15,8 +15,13 @@ def main():
     clock = pygame.time.Clock()
     dt = 0.0
 
+    # group up objects
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+
     # create game objects
-    p = player.Player(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2)
+    p = Player(constants.SCREEN_WIDTH/2, constants.SCREEN_HEIGHT/2)
 
     # game loop
     while True:
@@ -32,9 +37,10 @@ def main():
         # make screen black
         screen.fill("black")
 
-        # update, then draw player
-        p.update(dt)
-        p.draw(screen)
+        # update, then draw objects
+        updatable.update(dt)
+        for thing in drawable:
+            thing.draw(screen)
 
         # update display
         pygame.display.flip()
