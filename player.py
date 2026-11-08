@@ -1,11 +1,12 @@
 from circleshape import CircleShape
-import constants
+from shot import Shot
+from constants import *
 import pygame
 
 class Player(CircleShape):
 
     def __init__(self, x: float, y: float) -> None:
-        super().__init__(x, y, constants.PLAYER_RADIUS)
+        super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
 
     # in the Player class
@@ -18,26 +19,31 @@ class Player(CircleShape):
         return [a, b, c]
 
     def draw(self, screen: pygame.Surface) -> None:
-        pygame.draw.polygon(screen, "white", self.triangle(), constants.LINE_WIDTH)
+        pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
 
     def rotate(self, dt: float) -> None:
-        self.rotation += constants.PLAYER_TURN_SPEED * dt
+        self.rotation += PLAYER_TURN_SPEED * dt
 
     def update(self, dt: float) -> None:
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_a]:
-            self.rotate(dt * -1)    # invert dt to go left
-        if keys[pygame.K_d]:
-            self.rotate(dt)         # right is easier
-        if keys[pygame.K_w]:
-            self.move(dt)           # forward movement
-        if keys[pygame.K_s]:
-            self.move(dt*-1)        # reverse movement
+        if keys[pygame.K_a]:        # invert dt to go left
+            self.rotate(dt * -1)    
+        if keys[pygame.K_d]:        # right is easier
+            self.rotate(dt)         
+        if keys[pygame.K_w]:        # forward movement
+            self.move(dt) 
+        if keys[pygame.K_s]:        # reverse movement
+            self.move(dt*-1)        
+        if keys[pygame.K_SPACE]:
+            self.shoot()
 
     def move(self, dt: float) -> None:
-        vector = pygame.Vector2(0,1)
+        vector = pygame.Vector2(0, 1)
         rvector = vector.rotate(self.rotation)
-        mvector = rvector * constants.PLAYER_SPEED * dt
+        mvector = rvector * PLAYER_SPEED * dt
         self.position += mvector
 
+    def shoot(self) -> None:
+        s = Shot(self.position.x, self.position.y)
+        s.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
