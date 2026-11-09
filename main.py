@@ -32,6 +32,7 @@ def main():
     # create game objects
     p = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
     af = AsteroidField()
+    score = 0
 
     # game loop
     while True:
@@ -52,15 +53,20 @@ def main():
         for thing in drawable:
             thing.draw(screen)
 
-        # check if the player collided with an asteroid
+        # check collisions
         for a in asteroids:
+
+            # if the player collided with an asteroid, end game
             if p.collides_with(a):
                 log_event("player_hit")
                 print("Game over!")
+                print(f"Your score: {score}")
                 sys.exit()
+
             for s in shots:
                 if s.collides_with(a):
                     log_event("asteroid_shot")
+                    score += a.radius
                     a.split()
                     s.kill()
 
